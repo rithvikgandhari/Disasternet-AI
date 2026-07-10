@@ -1,0 +1,163 @@
+{
+  "name": "disasternet-ai",
+  "displayName": "DisasterNet AI",
+  "version": "1.0.0",
+  "description": "Intelligent Disaster Prediction & Emergency Response Platform powered by IBM Watsonx.ai",
+  "author": "DisasterNet AI Team",
+  "license": "MIT",
+  "homepage": "index.html",
+
+  "app": {
+    "type": "static-frontend",
+    "entry": "index.html",
+    "backend": false
+  },
+
+  "ibm": {
+    "watsonx": {
+      "baseUrl": "https://us-south.ml.cloud.ibm.com",
+      "modelId": "ibm/granite-13b-chat-v2",
+      "iamUrl": "https://iam.cloud.ibm.com/identity/token",
+      "credentialsFile": ".env",
+      "credentialsExample": ".env.example"
+    },
+    "cloud": {
+      "region": "us-south",
+      "services": [
+        "Watson Machine Learning",
+        "Watsonx.ai"
+      ]
+    }
+  },
+
+  "pages": [
+    { "id": "home",       "title": "Home",               "icon": "🏠", "description": "Live alerts, risk overview, AI assistant" },
+    { "id": "predict",    "title": "AI Prediction",       "icon": "🎯", "description": "Flood, cyclone, wildfire, heatwave, landslide risk scores" },
+    { "id": "map",        "title": "Live Map",            "icon": "🗺️", "description": "GIS map with disaster markers, shelters, rescue teams" },
+    { "id": "incidents",  "title": "Incident Reporting",  "icon": "📡", "description": "Citizen reports with AI image verification" },
+    { "id": "shelters",   "title": "Shelter Finder",      "icon": "🏠", "description": "Real-time shelter availability near user" },
+    { "id": "evacuate",   "title": "Evacuation & Vehicles","icon": "🚗", "description": "Safe routes + government vehicle dispatch" },
+    { "id": "volunteer",  "title": "Volunteer Portal",    "icon": "🤝", "description": "Task coordination and volunteer registration" },
+    { "id": "dashboard",  "title": "Government Dashboard","icon": "📊", "description": "Command & control for authorities" },
+    { "id": "assess",     "title": "Damage Assessment",   "icon": "🔍", "description": "Post-disaster AI impact estimation" }
+  ],
+
+  "features": {
+    "auth": {
+      "enabled": true,
+      "methods": ["email", "phone"],
+      "storage": "localStorage",
+      "backend": false,
+      "note": "Frontend-only auth — no server required. Session stored in browser localStorage."
+    },
+    "aiPrediction": {
+      "enabled": true,
+      "provider": "IBM Watsonx.ai",
+      "model": "ibm/granite-13b-chat-v2",
+      "disasterTypes": ["flood", "cyclone", "wildfire", "heatwave", "landslide"]
+    },
+    "liveMap": {
+      "enabled": true,
+      "provider": "Leaflet + OpenStreetMap",
+      "layers": ["flood", "fire", "shelter", "incident", "medical", "rescue"],
+      "defaultCenter": [19.076, 72.877],
+      "defaultZoom": 12
+    },
+    "vehicleDispatch": {
+      "enabled": true,
+      "vehicles": [
+        { "id": "car",       "name": "Emergency Car",       "etaMin": 8,  "etaMax": 12 },
+        { "id": "jeep",      "name": "Army Jeep",           "etaMin": 15, "etaMax": 20 },
+        { "id": "chopper",   "name": "Military Helicopter", "etaMin": 20, "etaMax": 35 },
+        { "id": "boat",      "name": "Rescue Boat",         "etaMin": 10, "etaMax": 18 },
+        { "id": "ambulance", "name": "Ambulance",           "etaMin": 6,  "etaMax": 10 },
+        { "id": "truck",     "name": "Relief Truck",        "etaMin": 25, "etaMax": 40 }
+      ],
+      "note": "Frontend simulation — integrate with government dispatch API for production."
+    },
+    "sos": {
+      "enabled": true,
+      "countdownSeconds": 5,
+      "alertsContacts": true,
+      "alertsRescueTeams": true
+    },
+    "incidentReporting": {
+      "enabled": true,
+      "aiVerification": true,
+      "photoUpload": true,
+      "gpsDetection": true
+    },
+    "damageAssessment": {
+      "enabled": true,
+      "provider": "IBM Watsonx.ai",
+      "inputs": ["disasterType", "affectedArea", "population", "duration"]
+    },
+    "notifications": {
+      "type": "toast",
+      "position": "bottom-right",
+      "types": ["success", "error", "info", "warning"]
+    }
+  },
+
+  "users": {
+    "roles": [
+      { "id": "citizen",    "label": "Citizen",             "access": "basic" },
+      { "id": "responder",  "label": "Emergency Responder",  "access": "responder" },
+      { "id": "ngo",        "label": "NGO / Relief Org",     "access": "ngo" },
+      { "id": "government", "label": "Government Authority", "access": "admin" },
+      { "id": "hospital",   "label": "Hospital / Medical",   "access": "medical" },
+      { "id": "volunteer",  "label": "Volunteer",            "access": "volunteer" }
+    ]
+  },
+
+  "assets": {
+    "css":  ["css/main.css"],
+    "js":   ["env.js", "js/watsonx.js", "js/app.js"],
+    "maps": ["https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"]
+  },
+
+  "environment": {
+    "variables": [
+      { "key": "WATSONX_API_KEY",    "required": true,  "description": "IBM Cloud API Key for Watsonx.ai" },
+      { "key": "WATSONX_PROJECT_ID", "required": true,  "description": "Watsonx.ai Project ID" },
+      { "key": "WATSONX_BASE_URL",   "required": false, "default": "https://us-south.ml.cloud.ibm.com" },
+      { "key": "WATSONX_MODEL_ID",   "required": false, "default": "ibm/granite-13b-chat-v2" },
+      { "key": "IBM_IAM_URL",        "required": false, "default": "https://iam.cloud.ibm.com/identity/token" },
+      { "key": "WEATHER_API_KEY",    "required": false, "description": "OpenWeatherMap API Key (optional)" },
+      { "key": "MAPTILER_API_KEY",   "required": false, "description": "MapTiler API Key for premium map tiles (optional)" }
+    ],
+    "setupFile": "env.js",
+    "templateFile": ".env.example"
+  },
+
+  "deployment": {
+    "type": "static",
+    "backend": false,
+    "requirements": "Any static file server (nginx, Apache, GitHub Pages, IBM Cloud Object Storage, etc.)",
+    "quickStart": [
+      "Copy .env.example to .env and fill in IBM Cloud credentials",
+      "Update env.js with your WATSONX_API_KEY and WATSONX_PROJECT_ID",
+      "Open index.html in a browser OR serve with: npx serve ."
+    ]
+  },
+
+  "futureScope": [
+    "Drone integration",
+    "IoT flood and earthquake sensors",
+    "Satellite imagery analysis",
+    "Offline emergency mode (PWA)",
+    "Multilingual voice assistant",
+    "Digital twin for smart cities",
+    "International deployment"
+  ],
+
+  "targetUsers": [
+    "Citizens",
+    "Disaster Response Teams",
+    "Hospitals",
+    "NGOs",
+    "Government Authorities",
+    "Police",
+    "Fire Departments"
+  ]
+}
